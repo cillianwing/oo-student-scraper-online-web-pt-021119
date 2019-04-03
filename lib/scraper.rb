@@ -27,12 +27,6 @@ class Scraper
     end
     student[:profile_quote] = doc.css(".vitals-text-container .profile-quote").text
     student
-    #:github => doc.css("a[href*='github']").attribute('href').value
-    #:linkedin => doc.css("a[href*='linkedin']").attribute('href').value
-    #:twitter => doc.css("a[href*='twitter']").attribute('href').value
-    #:blog =>
-    #:profile_quote => doc.css(".vitals-text-container .profile-quote").text
-    #:bio => doc.css(".details-container .description-holder p").text
   end
 
 end
