@@ -3,26 +3,36 @@ require 'nokogiri'
 require 'pry'
 
 class Scraper
-  attr_accessor :name, :location, :profile_url
+  attr_accessor :name, :location, :profile_url, :twitter, :linkedin, :github, :blog, :profile_quote, :bio
 
   def self.scrape_index_page(index_url)
     doc = Nokogiri::HTML(open(index_url))
-    #name = doc.css(".roster-cards-container .student-name").text
-    #location = doc.css(".roster-cards-container .studen-location").text
-    #profile_url = doc.css(".roster-cards-container a")
-    #binding.pry
-    student_array = []
-    doc.css(".roster-cards-container .student-card").each do |student|
-      binding.pry
-      student_array.push({:name => doc.css(".roster-cards-container .student-name").text,
-        :location => doc.css(".roster-cards-container .studen-location").text,
-        :profile_url => doc.css(".roster-cards-container a")})
+    doc.css(".roster-cards-container .student-card").collect do |student|
+      {:name => student.css(".student-name").text,
+        :location => student.css(".student-location").text,
+        :profile_url => student.css("a").attribute("href").value}
     end
-    student_array
   end
 
   def self.scrape_profile_page(profile_url)
-
+    doc = Nokogiri::HTML(open(profile_url))
+    student = {}
+    student[:bio] = doc.css(".details-container .description-holder p").text
+    doc.css(".social-icon-container a").each do |x|
+      social_a = x.attribute("href").value
+      student[:twitter] = social_a if social_a.include?("twitter")
+      student[:linkedin] = social_a if social_a.include?("linkedin")
+      student[:github] = social_a if social_a.include?("github")
+      student[:blog] = social_a unless social_a.include?("twitter") || social_a.include?("linkedin") || social_a.include?("github")
+    end
+    student[:profile_quote] = doc.css(".vitals-text-container .profile-quote").text
+    student
+    #:github => doc.css("a[href*='github']").attribute('href').value
+    #:linkedin => doc.css("a[href*='linkedin']").attribute('href').value
+    #:twitter => doc.css("a[href*='twitter']").attribute('href').value
+    #:blog =>
+    #:profile_quote => doc.css(".vitals-text-container .profile-quote").text
+    #:bio => doc.css(".details-container .description-holder p").text
   end
 
 end
