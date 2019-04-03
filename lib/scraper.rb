@@ -13,6 +13,7 @@ class Scraper
     #binding.pry
     student_array = []
     doc.css(".roster-cards-container .student-card").each do |student|
+      binding.pry
       student_array.push({:name => doc.css(".roster-cards-container .student-name").text,
         :location => doc.css(".roster-cards-container .studen-location").text,
         :profile_url => doc.css(".roster-cards-container a")})
